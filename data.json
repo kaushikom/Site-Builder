@@ -12,7 +12,6 @@
         "bg-color" : "",
         "btn-text" : "SIGN UP",
         "btn-color": "success",
-        "btn-outline" : true,
         "alignment" : "left"
     },
     "section" : {

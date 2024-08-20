@@ -1,9 +1,62 @@
 <?php session_start();
 include("./common/connection.php");
-include("./common/jsonOperations.php")
-    ?>
+include("./common/jsonOperations.php");
+
+$default_data = file_get_contents("data.json");
+$prevData = fetchData($conn);
+$prevNav = $prevData['navbar'];
+$prevHero = $prevData['hero'];
+$prevSection = $prevData['section'];
+$prevFooter = $prevData['footer'];
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if (isset($_POST['navbar_submit'])) {
+        $navbar = [
+            'header' => $_POST['navbar_heading'],
+            'header-alignment' => $_POST['navbar_position'],
+            'other-links' => explode(',', $_POST['navbar-links']),
+            'searchbar' => isset($_POST['navbar-search']),
+            'darkmode' => isset($_POST['navbar_darkmode']),
+        ];
+        updateSection($conn, $navbar, 'navbar', $prevData);
+
+        header('Location: editor.php');
+    }
+    if (isset($_POST['hero_submit'])) {
+        $hero = [
+            'heading' => $_POST['hero_heading'],
+            'description' => $_POST['hero_description'],
+            'btn-text' => $_POST['hero_btn_text'],
+            'alignment' => $_POST['hero_position'],
+            'btn-color' => $_POST['hero_btn_color'],
+        ];
+        updateSection($conn, $hero, 'hero', $prevData);
+
+        header('Location: editor.php');
+    }
+    if (isset($_POST['section_submit'])) {
+        $section = [
+            'heading' => $_POST['section_heading'],
+            'description' => $_POST['section_description'],
+            'alignment' => $_POST['section_position'],
+            'pointers' => $prevSection['pointers']
+        ];
+        updateSection($conn, $section, 'section', $prevData);
+
+        header('Location: editor.php');
+    }
+    if (isset($_POST['load-default'])) {
+        $update_sql = "UPDATE users SET site_data = ? WHERE user_id = ?";
+        $update_stmt = $conn->prepare($update_sql);
+        $update_stmt->bind_param("si", $default_data, $_SESSION['user_id']);
+        $update_stmt->execute();
+        $update_stmt->close();
+    }
+
+}
+?>
 <!-- Replace placeholder values with the data fetched -->
-<!-- Function array to string conversion in Navbar links input -->
 <!-- Handle section cards -->
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +74,9 @@ include("./common/jsonOperations.php")
 </head>
 
 <body>
+    <form action="logout.php" method="post">
+        <button name="logout" class="btn btn-dark m-2 d-block ms-auto">Logout</button>
+    </form>
     <h1 class="text-center mt-4">Editor</h1>
     <div class="accordion w-75 mx-auto mt-4" id="accordionExample" style="min-width:350px; max-width: 1000px;">
         <div class="accordion-item">
@@ -35,12 +91,12 @@ include("./common/jsonOperations.php")
                     <form action="" method="post">
                         <div class="mb-3">
                             <label for="FormControlInput1" class="form-label">Navbar Header</label>
-                            <input type="text" class="form-control" id="FormControlInput1" name="heading"
-                                placeholder="Navbar">
+                            <input value="<?= $prevNav['header'] ?>" type="text" class="form-control"
+                                id="FormControlInput1" name="navbar_heading" placeholder="Navbar">
                         </div>
                         <div class="mb-3">
-                            <label for="FormControlInput2" class="form-label">Header Position</label>
-                            <select class="form-select" id="FormControlInput2" name="heading position">
+                            <label for="FormControlInput21" class="form-label">Item's Position</label>
+                            <select name="navbar_position" class="form-select" id="FormControlInput21">
                                 <option value="center">Center</option>
                                 <option value="left">Left</option>
                                 <option value="right">Right</option>
@@ -49,21 +105,23 @@ include("./common/jsonOperations.php")
                         <div class="mb-3">
                             <label for="FormControlInput5" class="form-label">Navbar Links</label>
                             <input type="text" class="form-control" id="FormControlInput5" name="navbar-links"
-                                placeholder="Home, About, Contact, Careers">
+                                value="<?= implode(",", $prevNav['other-links']) ?>">
                         </div>
                         <div class="mb-3 form-check">
-                            <input class="form-check-input" type="checkbox" value="true" id="flexCheckDefault1">
+                            <input <?php echo $prevNav['searchbar'] ? "checked" : "" ?> class="form-check-input"
+                                type="checkbox" value="true" name="navbar-search" id="flexCheckDefault1">
                             <label class="form-check-label" for="flexCheckDefault1">
                                 Add Search Bar
                             </label>
                         </div>
                         <div class="mb-3 form-check">
-                            <input class="form-check-input" type="checkbox" value="true" id="flexCheckDefault">
+                            <input <?php echo $prevNav['darkmode'] == 1 ? "checked" : '' ?> class="form-check-input"
+                                type="checkbox" value="true" name="navbar_darkmode" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 Dark Navbar
                             </label>
                         </div>
-                        <button class="btn btn-primary px-4">Submit</button>
+                        <button class="btn btn-primary px-4" name="navbar_submit">Submit</button>
                     </form>
                 </div>
             </div>
@@ -80,34 +138,37 @@ include("./common/jsonOperations.php")
                     <form action="" method="post">
                         <div class="mb-3">
                             <label for="FormControlInput99" class="form-label">Heading</label>
-                            <input type="text" class="form-control" id="FormControlInput99" name="heading"
-                                placeholder="Heading">
+                            <input value="<?= $prevHero['heading'] ?>" type="text" class="form-control"
+                                id="FormControlInput99" name="hero_heading" placeholder="Heading">
                         </div>
                         <div class="mb-3">
                             <label for="FormControlInput97" class="form-label">Description</label>
-                            <input type="text" class="form-control" id="FormControlInput97" name="description"
+                            <input name="hero_description" value="<?= $prevHero['description'] ?>" type="text"
+                                class="form-control" id="FormControlInput97" name="description"
                                 placeholder="Description">
                         </div>
                         <div class="mb-3">
                             <label for="FormControlInput96" class="form-label">Button text</label>
-                            <input type="text" class="form-control" id="FormControlInput96" name="btn-txt"
-                                placeholder="Submit">
+                            <input name="hero_btn_text" value="<?= $prevHero['btn-text'] ?>" type="text"
+                                class="form-control" id="FormControlInput96" name="btn-txt" placeholder="Submit">
                         </div>
 
                         <div class="mb-3">
                             <label for="FormControlInput98" class="form-label">Header Position</label>
-                            <select class="form-select" id="FormControlInput98" name="hero position">
+                            <select name="hero_position" class="form-select" id="FormControlInput98"
+                                name="hero position">
                                 <option value="left">Left</option>
                                 <option value="right">Right</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="FormControlInput89" class="form-label">Button Color</label>
-                            <select class="form-select" id="FormControlInput89" name="hero position">
+                            <select name="hero_btn_color" class="form-select" id="FormControlInput89"
+                                name="hero position">
                                 <option value="" selected>Select button background</option>
                                 <option value="primary" class="text-bg-primary">Primary</option>
                                 <option value="secondary" class="text-bg-secondary">Secondary</option>
-                                <option value="success" class="text-bg-success">Success</option>
+                                <option value="success" selected class="text-bg-success">Success</option>
                                 <option value="danger" class="text-bg-danger">Danger</option>
                                 <option value="warning" class="text-bg-warning">Warning</option>
                                 <option value="info" class="text-bg-info">Info</option>
@@ -116,14 +177,7 @@ include("./common/jsonOperations.php")
                             </select>
                         </div>
 
-                        <div class="mb-3 form-check">
-                            <input class="form-check-input" type="checkbox" value="true" id="flexCheckDefault100">
-                            <label class="form-check-label" for="flexCheckDefault100">
-                                Button outline
-                            </label>
-                        </div>
-
-                        <button class="btn btn-primary px-4">Submit</button>
+                        <button name="hero_submit" class="btn btn-primary px-4">Submit</button>
                     </form>
                 </div>
             </div>
@@ -137,35 +191,43 @@ include("./common/jsonOperations.php")
             </h2>
             <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <div class="mb-3">
-                        <label for="FormControlInput1" class="form-label">Section Heading</label>
-                        <input type="text" class="form-control" id="FormControlInput1" name="section-heading"
-                            placeholder="Heading">
-                    </div>
-                    <div class="mb-3">
-                        <label for="FormControlInput82" class="form-label">Header Position</label>
-                        <select class="form-select" id="FormControlInput82" name="heading position">
-                            <option value="center">Center</option>
-                            <option value="left">Left</option>
-                            <option value="right">Right</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="FormControlInput81" class="form-label">Section description</label>
-                        <input type="text" class="form-control" id="FormControlInput91" name="section-description"
-                            placeholder="Description...">
-                    </div>
-                    <button class="btn btn-primary px-4">Submit</button>
+                    <form action="" method="post">
+                        <div class="mb-3">
+                            <label for="FormControlInput1" class="form-label">Section Heading</label>
+                            <input name="section_heading" value="<?= $prevSection['heading'] ?>" type="text"
+                                class="form-control" id="FormControlInput1" name="section-heading"
+                                placeholder="Heading">
+                        </div>
+                        <div class="mb-3">
+                            <label for="FormControlInput82" class="form-label">Header Position</label>
+                            <select name="section_position" class="form-select" id="FormControlInput82"
+                                name="heading position">
+                                <option value="center">Center</option>
+                                <option value="left">Left</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="FormControlInput81" class="form-label">Section description</label>
+                            <input name="section_description" value="<?= $prevSection['description'] ?>" type="text"
+                                class="form-control" id="FormControlInput91" name="section-description"
+                                placeholder="Description...">
+                        </div>
+                        <button name="section_submit" class="btn btn-primary px-4">Submit</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    <br>
+    <form class="w-75 mx-auto" action="" method="post">
+        <button name="load-default" class="btn btn-dark px-4 d-block mx-auto">Load Default Values</button>
+    </form>
 
 
     <h1 class="text-center mt-4">Output:</h1>
     <br>
-    <div style="padding:0; overflow:hidden;" class="container border rounded-1">
-
+    <div style="padding:0; overflow:hidden;" class="container border rounded-1 my-4">
         <?php include("layout.php") ?>
     </div>
 </body>

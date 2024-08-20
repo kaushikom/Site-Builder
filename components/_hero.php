@@ -1,4 +1,4 @@
-<div class="container py-4 <?= $hero["bg-color"] ?>">
+<div class="container py-4">
     <div class="row" style="padding: 5em 0em;">
         <?php
         if ($hero["alignment"] == 'left') { ?>
@@ -13,7 +13,7 @@
                 <span class="fs-1 fw-light text-body-secondary">Placeholder</span>
             </div>
         <?php } else { ?>
-            <div class="col-md-4 d-flex justify-content-center align-items-center rounded"
+            <div class="col-md-4 ml-4 d-flex justify-content-center align-items-center rounded"
                 style="height:300px; width:300px; background-color:#cecece;">
                 <span class="fs-1 fw-light text-body-secondary">Placeholder</span>
             </div>

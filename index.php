@@ -13,8 +13,10 @@
 </head>
 
 <body>
-    <a href="login.php">Login</a>
-    <a href="signup.php">Signup</a>
+    <div class="container-fluid m-4">
+        <a href="login.php"><button class="btn btn-primary">Login</button></a>
+        <a href="signup.php"><button class="btn btn-warning">Sign Up</button></a>
+    </div>
 </body>
 
 </html>
