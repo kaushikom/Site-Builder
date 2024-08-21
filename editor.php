@@ -32,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'btn-color' => $_POST['hero_btn_color'],
         ];
         updateSection($conn, $hero, 'hero', $prevData);
-
         header('Location: editor.php');
     }
     if (isset($_POST['section_submit'])) {
@@ -53,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $update_stmt->execute();
         $update_stmt->close();
     }
+
 
 }
 ?>
@@ -176,7 +176,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <option value="dark" class="text-bg-dark">Dark</option>
                             </select>
                         </div>
-
                         <button name="hero_submit" class="btn btn-primary px-4">Submit</button>
                     </form>
                 </div>
@@ -222,6 +221,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <br>
     <form class="w-75 mx-auto" action="" method="post">
         <button name="load-default" class="btn btn-dark px-4 d-block mx-auto">Load Default Values</button>
+    </form>
+
+    <form action="upload.php" style="min-width:350px; max-width: 1000px;"
+        class="w-75 p-2 py-4 border rounded mx-auto d-flex flex-column gap-3 align-items-start my-4" method="post"
+        enctype="multipart/form-data">
+        <label for="">Upload Hero Image</label>
+        <input type="file" name="image" class="form-control mt-2">
+        <input type="submit" value="Upload" name="submit" class="btn btn-warning mt-2">
     </form>
 
 
