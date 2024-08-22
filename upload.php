@@ -1,14 +1,12 @@
 <?php
 include("./common/connection.php");
 
-
 if (isset($_POST['submit'])) {
     $userId = $_SESSION['user_id'];
 
     $targetDir = "images/";
     $imageName = basename($_FILES["image"]["name"]);
     $targetFilePath = $targetDir . $imageName;
-
 
 
     if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFilePath)) {

@@ -38,6 +38,38 @@
             }
         ]
     },
+    "genericSections": [
+        {
+          "heading": "What's different about Easybank?",
+          "description" : "Manage provides all the functionality your team needs, without the complexity. Our software is tailor-made for modern digital product teams.",
+          "alignment":"left",
+            "subheads" : [
+                {
+                    "heading": "Track company-wide expenses",
+                    "description" : "See how your day-to-day tasks fit into the wider version. Go from tracking progress of the milestone level all the way done to the smallest of detaills. Never lose sight of the bigger picture again."
+                },
+                {
+                    "heading": "Track company-wide expenses",
+                    "description" : "See how your day-to-day tasks fit into the wider version. Go from tracking progress of the milestone level all the way done to the smallest of detaills. Never lose sight of the bigger picture again."
+                }
+            ]
+        },
+        {
+          "heading": "What's different about Easybank?",
+          "description" : "Manage provides all the functionality your team needs, without the complexity. Our software is tailor-made for modern digital product teams.",
+          "alignment":"left",
+            "subheads" : [
+                {
+                    "heading": "Track company-wide expenses",
+                    "description" : "See how your day-to-day tasks fit into the wider version. Go from tracking progress of the milestone level all the way done to the smallest of detaills. Never lose sight of the bigger picture again."
+                },
+                {
+                    "heading": "Track company-wide expenses",
+                    "description" : "See how your day-to-day tasks fit into the wider version. Go from tracking progress of the milestone level all the way done to the smallest of detaills. Never lose sight of the bigger picture again."
+                }
+            ]
+        }
+    ],
     "footer" : {
         "heading" : "easybank",
         "facebook_url" : "",

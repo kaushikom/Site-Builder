@@ -78,6 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button name="logout" class="btn btn-dark m-2 d-block ms-auto">Logout</button>
     </form>
     <h1 class="text-center mt-4">Editor</h1>
+
+    <!-- Accordion -->
     <div class="accordion w-75 mx-auto mt-4" id="accordionExample" style="min-width:350px; max-width: 1000px;">
         <div class="accordion-item">
             <h2 class="accordion-header">
@@ -219,10 +221,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
     <br>
+    <!-- Section forms generator form -->
+    <form id="sectionForm" class="w-75 mx-auto p-2 my-4 border rounded" style="min-width:350px; max-width: 1000px;">
+        <div class="form-group">
+            <label for="sectionCount">Number of Sections:</label>
+            <input type="number" class="form-control" id="sectionCount" min="1" required>
+        </div>
+        <button type="submit" class="btn btn-primary my-2">Generate Sections</button>
+    </form>
+    <!-- Section forms -->
+    <div id="dynamicForm"></div>
+    <!-- Load default -->
     <form class="w-75 mx-auto" action="" method="post">
         <button name="load-default" class="btn btn-dark px-4 d-block mx-auto">Load Default Values</button>
     </form>
 
+    <!-- Upload image -->
     <form action="upload.php" style="min-width:350px; max-width: 1000px;"
         class="w-75 p-2 py-4 border rounded mx-auto d-flex flex-column gap-3 align-items-start my-4" method="post"
         enctype="multipart/form-data">
@@ -231,7 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="submit" value="Upload" name="submit" class="btn btn-warning mt-2">
     </form>
 
-
+    <!-- Output -->
     <h1 class="text-center mt-4">Output:</h1>
     <br>
     <div style="padding:0; overflow:hidden;" class="container border rounded-1 my-4">

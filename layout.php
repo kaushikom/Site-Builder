@@ -1,7 +1,7 @@
 <?php
 include("./common/bootstrap.php");
 include("./common/connection.php");
-
+include("genericSection.php");
 
 $data = fetchData($conn);
 
@@ -9,6 +9,7 @@ if (!$data) {
     echo "Could not read file";
 } else {
     $section = $data["section"];
+    $genericSections = $data["genericSections"];
     $navbar = $data["navbar"];
     $otherLinks = $navbar["other-links"];
     $hero = $data["hero"];
@@ -42,4 +43,7 @@ function getImage($conn)
 include("./components/_navbar.php");
 include("./components/_hero.php");
 include("./components/_section.php");
+foreach ($genericSections as $section) {
+    genericSection($section);
+}
 include("./components/_footer.php");
