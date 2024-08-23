@@ -240,9 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div id="dynamicForm"></div>
 
     <!-- Manage sections -->
-    <div class="container w-75 mx-auto mt-4 border rounded p-2" style="min-width:350px; max-width: 1000px;">
-        <h3 class="text-center">Manage Sections</h3>
-    </div>
+    <?php include("manageSections.php"); ?>
 
     <!-- Upload image -->
     <form action="upload.php" style="min-width:350px; max-width: 1000px;"

@@ -35,7 +35,7 @@ function updateSection($conn, $section, $section_name, $data)
     }
 }
 
-function fetchSection($conn)
+function fetchSection($conn, )
 {
     if (isset($_SESSION["user_id"])) {
         $query = 'SELECT sectiondata FROM section WHERE user_id = ?';
@@ -49,8 +49,6 @@ function fetchSection($conn)
         while ($row = $result->fetch_assoc()) {
             $collection[] = json_decode($row['sectiondata'], true);
         }
-
-
 
     }
     $genericSections = [];
