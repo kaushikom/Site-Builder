@@ -4,12 +4,10 @@ include("./common/connection.php");
 include("genericSection.php");
 
 $data = fetchData($conn);
-
 if (!$data) {
     echo "Could not read file";
 } else {
     $section = $data["section"];
-    $genericSections = $data["genericSections"];
     $navbar = $data["navbar"];
     $otherLinks = $navbar["other-links"];
     $hero = $data["hero"];
@@ -21,6 +19,7 @@ if (!$data) {
             : "");
 }
 
+$genericSections = fetchSection($conn);
 function getImage($conn)
 {
     if (isset($_SESSION['user_id'])) {
@@ -46,4 +45,7 @@ include("./components/_section.php");
 foreach ($genericSections as $section) {
     genericSection($section);
 }
+// echo "<pre>";
+// var_dump($collection);
+// echo "</pre>";
 include("./components/_footer.php");

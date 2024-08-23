@@ -1,10 +1,9 @@
 <?php
-
-
 function insertDefaultData($conn)
 {
 
     $default_data = file_get_contents("data.json");
+
     if (isset($_SESSION['user_id'])) {
 
         $check_sql = "SELECT site_data FROM users WHERE user_id = ?";

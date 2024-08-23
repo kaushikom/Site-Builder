@@ -1,6 +1,8 @@
 <?php session_start();
 include("./common/connection.php");
 include("./common/jsonOperations.php");
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 $default_data = file_get_contents("data.json");
 $prevData = fetchData($conn);
@@ -46,18 +48,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header('Location: editor.php');
     }
     if (isset($_POST['load-default'])) {
+        // Loading the default json
         $update_sql = "UPDATE users SET site_data = ? WHERE user_id = ?";
         $update_stmt = $conn->prepare($update_sql);
         $update_stmt->bind_param("si", $default_data, $_SESSION['user_id']);
         $update_stmt->execute();
         $update_stmt->close();
+        // // Deleting additional sections added by the user
+        $delete_sql = "DELETE FROM section WHERE user_id =?";
+        $delete_stmt = $conn->prepare($delete_sql);
+        $delete_stmt->bind_param("i", $_SESSION['user_id']);
+        $delete_stmt->execute();
+        $delete_stmt->close();
     }
-
 
 }
 ?>
-<!-- Replace placeholder values with the data fetched -->
-<!-- Handle section cards -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -83,8 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="accordion w-75 mx-auto mt-4" id="accordionExample" style="min-width:350px; max-width: 1000px;">
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                    aria-expanded="true" aria-controls="collapseOne">
+                <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                     Navbar
                 </button>
             </h2>
@@ -130,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     Hero
                 </button>
@@ -185,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                     Section
                 </button>
@@ -231,10 +238,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </form>
     <!-- Section forms -->
     <div id="dynamicForm"></div>
-    <!-- Load default -->
-    <form class="w-75 mx-auto" action="" method="post">
-        <button name="load-default" class="btn btn-dark px-4 d-block mx-auto">Load Default Values</button>
-    </form>
+
+    <!-- Manage sections -->
+    <div class="container w-75 mx-auto mt-4 border rounded p-2" style="min-width:350px; max-width: 1000px;">
+        <h3 class="text-center">Manage Sections</h3>
+    </div>
 
     <!-- Upload image -->
     <form action="upload.php" style="min-width:350px; max-width: 1000px;"
@@ -245,6 +253,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="submit" value="Upload" name="submit" class="btn btn-warning mt-2">
     </form>
 
+    <!-- Load default -->
+    <form class="w-75 mx-auto" action="" method="post">
+        <button name="load-default" class="btn btn-dark px-4 d-block mx-auto">Load Default Values</button>
+    </form>
     <!-- Output -->
     <h1 class="text-center mt-4">Output:</h1>
     <br>
@@ -252,5 +264,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php include("layout.php") ?>
     </div>
 </body>
+
 
 </html>

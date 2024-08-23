@@ -66,6 +66,7 @@ function generateSectionFields(count) {
   }
 
   formHtml +=
+    '<input type="hidden" id="genericSections" name="genericSections"/>' +
     '<button type="submit" class="btn btn-success">Submit Content</button></form>';
   document.getElementById("dynamicForm").innerHTML = formHtml;
 
@@ -73,31 +74,57 @@ function generateSectionFields(count) {
     .getElementById("contentForm")
     .addEventListener("submit", submitContent);
 }
-
+function removeSectionFields() {
+  document.getElementById("dynamicForm").innerHTML = "";
+}
 function submitContent(e) {
   e.preventDefault();
 
   const formData = new FormData(e.target);
   const data = Object.fromEntries(formData);
 
-  const genericSections = [];
-  for (let i = 0; i < Object.keys(data).length / 7; i++) {
-    genericSections.push({
-      heading: data[`genericSections[${i}][heading]`],
-      description: data[`genericSections[${i}][description]`],
-      alignment: data[`genericSections[${i}][alignment]`],
+  const genericSections = {}; // Change from array to object
+  let i = 0;
+  while (data[`genericSections[${i}][heading]`] !== undefined) {
+    genericSections[`section_${i + 1}`] = {
+      // Create unique keys for each section
+      heading: data[`genericSections[${i}][heading]`] || "",
+      description: data[`genericSections[${i}][description]`] || "",
+      alignment: data[`genericSections[${i}][alignment]`] || "left",
       subheads: [
         {
-          heading: data[`genericSections[${i}][subheads][0][heading]`],
-          description: data[`genericSections[${i}][subheads][0][description]`],
+          heading: data[`genericSections[${i}][subheads][0][heading]`] || "",
+          description:
+            data[`genericSections[${i}][subheads][0][description]`] || "",
         },
         {
-          heading: data[`genericSections[${i}][subheads][1][heading]`],
-          description: data[`genericSections[${i}][subheads][1][description]`],
+          heading: data[`genericSections[${i}][subheads][1][heading]`] || "",
+          description:
+            data[`genericSections[${i}][subheads][1][description]`] || "",
         },
       ],
-    });
+    };
+    i++;
   }
+  console.log(JSON.stringify(genericSections, null, 2)); // Pretty print JSON for debugging
 
-  console.log({ genericSections });
+  fetch("submitform.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(genericSections), // Now sending as an object, not an array
+  })
+    .then((response) => response.text())
+    .then((text) => {
+      console.log("Raw response:", text);
+      const data = JSON.parse(text);
+      console.log("Parsed JSON:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+
+  removeSectionFields();
+  location.reload();
 }
